@@ -19,49 +19,69 @@
   </header>
   <main>
     <section class="input_section">
-      <h2>Masukkan Buku Baru</h2>
+      <h2>Add New Book</h2>
       <form id="inputBook">
         <div class="input">
-          <label for="inputBookTitle">Judul</label>
+          <label for="inputBookTitle">Title</label>
           <input id="inputBookTitle" type="text" required>
         </div>
         <div class="input">
-          <label for="inputBookAuthor">Penulis</label>
+          <label for="inputBookAuthor">Author</label>
           <input id="inputBookAuthor" type="text" required>
         </div>
         <div class="input">
-          <label for="inputBookYear">Tahun</label>
+          <label for="inputBookYear">Year</label>
           <input id="inputBookYear" type="number" required>
         </div>
         <div class="input_inline">
-          <label for="inputBookIsComplete">Selesai dibaca</label>
+          <label for="inputBookIsComplete">Completed read</label>
           <input id="inputBookIsComplete" type="checkbox">
         </div>
-        <button id="bookSubmit" type="submit">Masukkan Buku ke rak <span>Belum selesai dibaca</span></button>
+        <button id="bookSubmit" type="submit">Add book to <span>Bookshelf</span></button>
       </form>
     </section>
 
     <section class="search_section">
-      <h2>Cari Buku (Opsional)</h2>
+      <h2>Search Book </h2>
       <form id="searchBook">
-        <label for="searchBookTitle">Judul</label>
+        <label for="searchBookTitle">Title</label>
         <input id="searchBookTitle" type="text">
-        <button id="searchSubmit" type="submit">Cari</button>
+        <button id="searchSubmit" type="submit">Search</button>
       </form>
     </section>
 
     <section class="book_shelf">
-      <h2>Belum selesai dibaca</h2>
+      <h2>Incomplete Bookshelf</h2>
 
       <div id="incompleteBookshelfList" class="book_list">
       </div>
     </section>
 
     <section class="book_shelf">
-      <h2>Selesai dibaca</h2>
+      <h2>Completed Bookshelf</h2>
 
       <div id="completeBookshelfList" class="book_list">
       </div>
+    </section>
+
+    <section class="edit_section" id="edit">
+      <h2>Edit Book</h2>
+      <form id="editBook">
+        <div class="input">
+          <label for="editBookTitle">Title</label>
+          <input id="editBookTitle" type="text">
+        </div>
+        <div class="input">
+          <label for="editBookAuthor">Author</label>
+          <input id="editBookAuthor" type="text">
+        </div>
+        <div class="input">
+          <label for="editBookYear">Year</label>
+          <input id="editBookYear" type="number">
+        </div>
+        <button class="saveButton" id="saveEdit" type="submit"><span>Save</span></button>
+        <button class="cancelButton" id="cancelEdit" type="submit"><span>Cancel</span></button>
+      </form>
     </section>
   </main>
 

@@ -79,28 +79,37 @@ function makeBookshelf(bookObject) {
         let containerActionItem = document.createElement('div');
         containerActionItem.classList.add('action');
 
-        const isDone = isComplete ? 'Incomplete' : 'Complete';
+        const isDone = isComplete ? 'Mark as Incomplete' : 'Mark as Complete';
         const greenButton = document.createElement('button');
         greenButton.classList.add('green');
         greenButton.innerText = isDone;
-        greenButton.addEventListener('click', function() {
+        greenButton.addEventListener('click', function () {
             let text = 'Are you done reading this book?';
             if (confirm(text) === true) {
                 changeStatus(id);
+                resetForm();
             }
         });
 
         const redButton = document.createElement('button');
         redButton.classList.add('red');
         redButton.innerText = 'Delete';
-        redButton.addEventListener('click', function() {
+        redButton.addEventListener('click', function () {
             let text = 'Are you sure want to delete this book?';
             if (confirm(text) === true) {
                 deleteBook(id);
+                resetForm();
             }
         });
 
-        containerActionItem.append(greenButton, redButton);
+        const orangeButton = document.createElement('button');
+        orangeButton.classList.add('orange');
+        orangeButton.innerText = 'Edit';
+        orangeButton.addEventListener('click', function () {
+            editBook(id);
+        });
+
+        containerActionItem.append(greenButton, redButton, orangeButton);
         bookItem.append(containerActionItem);
 
         if (isComplete === false) {
@@ -132,6 +141,50 @@ function changeStatus(bookId) {
     saveData();
 }
 
+function editBook(bookId) {
+    document.getElementById('edit').style.display = 'flex';
+    const bookIndex = findBookIndex(bookId);
+
+    if (bookIndex === null) {
+        return;
+    }
+
+    const title = document.getElementById('editBookTitle');
+    const author = document.getElementById('editBookAuthor');
+    const year = document.getElementById('editBookYear');
+
+    title.setAttribute('value', books[bookIndex].title);
+    author.setAttribute('value', books[bookIndex].author);
+    year.setAttribute('value', books[bookIndex].year);
+
+    const saveButton = document.getElementById('saveEdit');
+    const cancelButton = document.getElementById('cancelEdit');
+
+    saveButton.addEventListener('click', function (event) {
+        let text = 'Save changes?';
+        if (confirm(text) === true) {
+            books[bookIndex].title = title.value;
+            books[bookIndex].author = author.value;
+            books[bookIndex].year = year.value;
+
+            document.getElementById('edit').style.display = 'none';
+            document.dispatchEvent(new Event(RENDER_EVENT));
+            saveData();
+
+            alert('Edit successful!');
+            resetForm();
+            event.preventDefault();
+        } else {
+            event.preventDefault();
+        }
+    });
+
+    cancelButton.addEventListener('click', function (event) {
+        document.getElementById('edit').style.display = 'none';
+        event.preventDefault();
+    });
+}
+
 function deleteBook(bookId) {
     const bookIndex = findBookIndex(bookId);
 
@@ -142,6 +195,37 @@ function deleteBook(bookId) {
     books.splice(bookIndex, 1);
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
+}
+
+function searchBook(searchInputTitle) {
+    const searchBookList = [];
+    let bookIndex = 0;
+    let found = false;
+
+    for (let index = 0; index < books.length; index++) {
+        if (books[index].title.toLowerCase().includes(searchInputTitle)) {
+            bookIndex = index;
+            found = true;
+            const bookObject = generateBookObject(
+                books[index].id,
+                books[index].title,
+                books[index].author,
+                books[index].year,
+                books[index].isComplete,
+            )
+            searchBookList.push(bookObject);
+        }
+    }
+
+    if (found) {
+        makeBookshelf(searchBookList);
+    } else {
+        const incompleteBookshelfList = document.getElementById('incompleteBookshelfList');
+        const completeBookshelfList = document.getElementById('completeBookshelfList');
+    
+        incompleteBookshelfList.innerHTML = '';
+        completeBookshelfList.innerHTML = '';
+    }
 }
 
 function loadDataFromStorage() {
@@ -171,6 +255,13 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         addBook();
         resetForm();
+    });
+
+    const searchSubmitForm = document.getElementById('searchBook');
+    searchSubmitForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const searchInput = document.getElementById('searchBookTitle').value.toLowerCase();
+        searchBook(searchInput);
     });
 
     if (isStorageExist()) {
